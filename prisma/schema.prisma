@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:root@localhost:3306/e-com2"
 }
 
 enum Role {
