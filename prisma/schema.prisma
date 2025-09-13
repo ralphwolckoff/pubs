@@ -10,8 +10,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://root:root@localhost:3306/e-com2"
+  provider = "dpg-d32ke7ripnbc73d93rkg-a"
+  url      = "postgresql://e_com_h6hw_user:9uIsSKipMb27KaUpuSPaJlZsLDtoXjgH@dpg-d32ke7ripnbc73d93rkg-a/e_com_h6hw"
 }
 
 enum Role {
