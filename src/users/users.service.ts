@@ -51,7 +51,7 @@ export class UsersService {
     }
     const user = await this.prisma.user.findUnique({
       where: { id: id },
-      include: { profile: true, store: true, orders: true },
+      include: { profile: true,address:true, store: true, orders: true },
     });
     if (!user) {
       throw new NotFoundException(`User with ID ${user} not found.`);
@@ -94,7 +94,7 @@ export class UsersService {
     return this.prisma.user.update({
       where: { id },
       data: updateData,
-      include: { profile: true, store: true, orders: true },
+      include: { profile: true, store: true,address:true, orders: true },
     });
   }
 

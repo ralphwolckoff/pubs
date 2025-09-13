@@ -150,14 +150,14 @@ export class AuthService {
     return tokens;
   }
 
-  @UseGuards(JwtAuthGuard)
-  async logout(userId: string) {
-    await this.prisma.user.updateMany({
-      where: { id: userId, refreshToken: { not: null } },
-      data: {
-        refreshToken: null,
-      },
-    });
-    return { message: 'Déconnexion réussie.' };
-  }
+  // @UseGuards(JwtAuthGuard)
+  // async logout(userId: string) {
+  //   await this.prisma.user.updateMany({
+  //     where: { id: userId, refreshToken: { not: null } },
+  //     data: {
+  //       refreshToken: null,
+  //     },
+  //   });
+  //   return { message: 'Déconnexion réussie.' };
+  // }
 }

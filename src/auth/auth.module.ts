@@ -9,7 +9,6 @@ import { RolesGuard } from './guards/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 
-
 @Module({
   imports: [
     JwtModule.registerAsync({

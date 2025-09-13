@@ -151,8 +151,9 @@ export class OrdersService {
     return this.prisma.order.findMany({
       where: { storeId: storeId },
       include: {
+        address: true,
         items: { include: { product: { include: { images: true } } } },
-        user: {include:{profile:true}},
+        user: { include: { profile: true } },
         store: true,
       },
       orderBy: { createdAt: 'desc' },
@@ -169,7 +170,11 @@ export class OrdersService {
     }
     const clientOrder = this.prisma.order.findMany({
       where: { userId: clientId },
-      include:{store:true,items:{ include:{product:{include:{images:true}}}}}
+      include: {
+        store: true,
+        address:true,
+        items: { include: { product: { include: { images: true } } } },
+      },
     });
     return clientOrder;
   }
@@ -192,26 +197,23 @@ export class OrdersService {
   ): Promise<Order> {
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
-      include:{store:true}
+      include: { store: true },
     });
 
     if (!order) {
-      throw new NotFoundException(
-        `Order item with ID "${orderId}" not found.`,
-      );
+      throw new NotFoundException(`Order item with ID "${orderId}" not found.`);
     }
 
     const updatedOrder = await this.prisma.order.update({
       where: { id: orderId },
       data: { status: newStatus.newStatus },
       include: {
-        user:true,
-        address:true,
+        user: true,
+        address: true,
         items: true,
         store: { select: { id: true, name: true } },
       },
     });
-
 
     return updatedOrder;
   }

@@ -166,7 +166,6 @@ export class AuthController {
     @Req() req: RequestWithUser, // Le guard a déjà attaché les données utilisateur
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log(req.user);
     const { accessToken, refreshToken: newRefreshToken } =
       await this.authService.refreshToken(req.user.id, req.user.refreshToken);
 
@@ -188,22 +187,22 @@ export class AuthController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  @HttpCode(HttpStatus.OK)
-  async logout(
-    @Request() req: RequestWithUser,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    await this.authService.logout(req.user.id);
-    // Effacer le cookie de rafraîchissement
-    res.clearCookie('refreshToken', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-    });
-    return { message: 'Déconnexion réussie.' };
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Post('logout')
+  // @HttpCode(HttpStatus.OK)
+  // async logout(
+  //   @Request() req: RequestWithUser,
+  //   @Res({ passthrough: true }) res: Response,
+  // ) {
+  //   await this.authService.logout(req.user.id);
+  //   // Effacer le cookie de rafraîchissement
+  //   res.clearCookie('refreshToken', {
+  //     httpOnly: true,
+  //     secure: process.env.NODE_ENV === 'production',
+  //     sameSite: 'lax',
+  //   });
+  //   return { message: 'Déconnexion réussie.' };
+  // }
 
   @Post(':userId/profile')
   async createOrUpdateProfile(

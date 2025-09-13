@@ -11,8 +11,8 @@ export class JwtRefreshStrategy extends PassportStrategy(
 ) {
   constructor() {
     super({
-      jwtFromRequest: (req: RequestWithUser) => {
-        const token = req.user?.refreshToken;
+      jwtFromRequest: (req) => {
+        const token = req.cookies['refreshToken'];
         if (!token) {
           throw new UnauthorizedException(
             'Jeton de rafraîchissement non trouvé',
@@ -20,13 +20,13 @@ export class JwtRefreshStrategy extends PassportStrategy(
         }
         return token;
       },
-      secretOrKey: process.env.JWT_REFRESH_TOKEN_SECRET as string,
+      secretOrKey: String(process.env.JWT_REFRESH_TOKEN_SECRET),
       passReqToCallback: true,
     });
   }
 
-  async validate(req: RequestWithUser, payload: any) {
-    const refreshToken = req.user?.refreshToken;
+  async validate(req: Request, payload: any) {
+    const refreshToken = req.cookies['refreshToken'];
     if (!refreshToken) {
       throw new UnauthorizedException('Jeton de rafraîchissement non fourni.');
     }
