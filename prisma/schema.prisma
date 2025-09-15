@@ -10,7 +10,7 @@ generator client {
 }
 
 datasource db {
-  provider = "dpg-d32ke7ripnbc73d93rkg-a"
+  provider = "postgresql"
   url      = "postgresql://e_com_h6hw_user:9uIsSKipMb27KaUpuSPaJlZsLDtoXjgH@dpg-d32ke7ripnbc73d93rkg-a/e_com_h6hw"
 }
 
