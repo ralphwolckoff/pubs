@@ -32,6 +32,13 @@ export class AddressController {
     return this.addressService.create(userId, createAddressDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  findOne(@Req() req: RequestWithUser) {
+    const userId = req.user.id;
+    return this.addressService.findOneByUserId(userId);
+  }
+
   @Get(':id')
   async findOneAddress(@Param('id') id: string) {
     const address = await this.addressService.findOneById(id);
@@ -41,12 +48,6 @@ export class AddressController {
     return address;
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('me')
-  findOne(@Req() req: RequestWithUser) {
-    const userId = req.user.id;
-    return this.addressService.findOneByUserId(userId);
-  }
 
   @UseGuards(JwtAuthGuard)
   @Patch('me')

@@ -4,8 +4,9 @@ import {
   NotFoundException,
   BadRequestException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
-import { Order, OrderStatus, Prisma } from 'generated/prisma';
+import { Order, OrderItem, OrderStatus, Prisma } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrderDto } from './Dto/create-order.dto';
 import { UpdateOrderDto } from './Dto/update-order.dto';
@@ -71,14 +72,22 @@ export class OrdersService {
         priceAtOrder,
       });
     }
-    const address = await this.prisma.address.findUnique({
-      where: { id: orderData.addressId },
-      include: { user: true },
-    });
-    if (!address) {
-      throw new NotFoundException(
-        `Adresse avec ID ${orderData.addressId} introuvable.`,
-      );
+
+    if (orderData.addressId) {
+      const address = await this.prisma.address.findUnique({
+        where: { id: orderData.addressId },
+        include: { user: true },
+      });
+      if (!address) {
+        throw new NotFoundException(
+          `Adresse avec ID ${orderData.addressId} introuvable.`,
+        );
+      }
+      if (address.userId !== orderData.userId) {
+        throw new ForbiddenException(
+          "Cette adresse n'appartient pas à l'utilisateur spécifié.",
+        );
+      }
     }
 
     return this.prisma.$transaction(async (prisma) => {
@@ -88,6 +97,8 @@ export class OrdersService {
           data: {
             ...orderData,
             storeId: storeId,
+            shippingAddress: orderData.shippingAddress || null,
+            addressId: orderData.addressId || null,
             totalAmount: storeOrder.totalAmount,
             items: {
               create: storeOrder.items,
@@ -97,11 +108,12 @@ export class OrdersService {
             items: { include: { product: true } },
             user: true,
             store: true,
-            address: true, // ⚠️ AJOUT : Inclure l'adresse
+            address: true,
           },
         });
         createdOrders.push(order);
       }
+
       await Promise.all(
         items.map(async (item) => {
           await prisma.product.update({
@@ -112,6 +124,7 @@ export class OrdersService {
           });
         }),
       );
+
       return createdOrders[0];
     });
   }
@@ -154,7 +167,7 @@ export class OrdersService {
         address: true,
         items: { include: { product: { include: { images: true } } } },
         user: { include: { profile: true } },
-        store: true,
+        store: { include: { user: { include: { profile: true } } } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -171,8 +184,8 @@ export class OrdersService {
     const clientOrder = this.prisma.order.findMany({
       where: { userId: clientId },
       include: {
-        store: true,
-        address:true,
+        store: { include: { user: { include: { profile: true } } } },
+        address: true,
         items: { include: { product: { include: { images: true } } } },
       },
     });

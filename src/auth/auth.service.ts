@@ -136,7 +136,7 @@ export class AuthService {
     }
 
     // 2. Vérifie si le jeton de rafraîchissement stocké est valide.
-    const isTokenValid = bcrypt.compare(refreshToken, user.refreshToken);
+    const isTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
     if (!isTokenValid) {
       throw new ForbiddenException(
         'Jeton de rafraîchissement invalide ou expiré.',
@@ -149,15 +149,4 @@ export class AuthService {
 
     return tokens;
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // async logout(userId: string) {
-  //   await this.prisma.user.updateMany({
-  //     where: { id: userId, refreshToken: { not: null } },
-  //     data: {
-  //       refreshToken: null,
-  //     },
-  //   });
-  //   return { message: 'Déconnexion réussie.' };
-  // }
 }

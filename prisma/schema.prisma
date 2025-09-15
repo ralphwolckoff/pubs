@@ -10,8 +10,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = "postgresql://e_com_h6hw_user:9uIsSKipMb27KaUpuSPaJlZsLDtoXjgH@dpg-d32ke7ripnbc73d93rkg-a/e_com_h6hw"
 }
 
 enum Role {
@@ -162,9 +162,10 @@ model Order {
   orderNumber String    @unique @default(cuid())
   status  OrderStatus @default(PENDING)
   totalAmount Float
+  shippingAddress String?
 
-  addressId  String 
-  address    Address @relation(fields: [addressId], references: [id]) 
+  addressId  String?
+  address    Address? @relation(fields: [addressId], references: [id]) 
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

@@ -187,23 +187,6 @@ export class AuthController {
     };
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @Post('logout')
-  // @HttpCode(HttpStatus.OK)
-  // async logout(
-  //   @Request() req: RequestWithUser,
-  //   @Res({ passthrough: true }) res: Response,
-  // ) {
-  //   await this.authService.logout(req.user.id);
-  //   // Effacer le cookie de rafraîchissement
-  //   res.clearCookie('refreshToken', {
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === 'production',
-  //     sameSite: 'lax',
-  //   });
-  //   return { message: 'Déconnexion réussie.' };
-  // }
-
   @Post(':userId/profile')
   async createOrUpdateProfile(
     @Param('userId') userId: string,
@@ -211,13 +194,6 @@ export class AuthController {
   ): Promise<Profile> {
     return this.userService.updateProfile(userId, createProfileDto);
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('profile')
-  // async getProfile(@Request() req: RequestWithUser) {
-  //   const Profile = await this.userService.getUserProfile(req.user.id);
-  //   return Profile;
-  // }
 
   @UseGuards(JwtAuthGuard)
   @Get('user')

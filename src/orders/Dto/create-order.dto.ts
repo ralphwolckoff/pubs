@@ -1,5 +1,5 @@
 // orders/dto/create-order.dto.ts
-import { IsString, IsNumber, IsArray, ValidateNested } from 'class-validator';
+import { IsString, IsNumber, IsArray, ValidateNested, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateOrderItemDto {
@@ -15,42 +15,15 @@ export class CreateOrderDto {
   userId: string;
 
   @IsString()
-  addressId: string;
+  @IsOptional()
+  addressId?: string;
+
+  @IsString()
+  @IsOptional()
+  shippingAddress?:string
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateOrderItemDto)
   items: CreateOrderItemDto[];
 }
-
-
-// // orders/dto/create-order.dto.ts
-// import {
-//   IsString,
-//   IsNumber,
-//   IsArray,
-//   ValidateNested,
-//   IsUUID,
-// } from 'class-validator';
-// import { Type } from 'class-transformer';
-
-// export class CreateOrderItemDto {
-//   @IsUUID()
-//   productId: string;
-
-//   @IsNumber()
-//   quantity: number;
-// }
-
-// export class CreateOrderDto {
-//   @IsUUID()
-//   userId: string;
-
-//   @IsUUID()
-//   addressId: string;
-
-//   @IsArray()
-//   @ValidateNested({ each: true })
-//   @Type(() => CreateOrderItemDto)
-//   items: CreateOrderItemDto[];
-// }
