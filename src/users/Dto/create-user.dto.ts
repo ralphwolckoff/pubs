@@ -12,10 +12,12 @@ import { Role } from 'generated/prisma';
 
 export class CreateProfileDto {
   @IsString()
-  firstName: string;
+  @IsOptional()
+  firstName?: string;
 
   @IsString()
-  lastName: string;
+  @IsOptional()
+  lastName?: string;
 
   @IsString()
   @IsOptional()

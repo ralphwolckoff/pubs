@@ -20,7 +20,14 @@ export class CreateOrderDto {
 
   @IsString()
   @IsOptional()
-  shippingAddress?:string
+  shippingAddress?: string;
+
+  @IsString()
+  paymentMethod: string;
+
+  @IsNumber()
+  @IsOptional()
+  mobileMoneyNumber?: number;
 
   @IsArray()
   @ValidateNested({ each: true })

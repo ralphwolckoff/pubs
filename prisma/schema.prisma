@@ -10,8 +10,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = "postgresql://e_com_h6hw_user:9uIsSKipMb27KaUpuSPaJlZsLDtoXjgH@dpg-d32ke7ripnbc73d93rkg-a/e_com_h6hw"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -48,8 +48,8 @@ model User {
 
 model Profile {
   id          String    @id @default(uuid())
-  firstName String
-  lastName  String
+  firstName String?
+  lastName  String?
   photoUrl    String?   
   bio         String?
   phoneNumber Int?
@@ -87,13 +87,14 @@ model Store {
   products    Product[]
   categories  Category[]
   orders      Order[]
+  promotions  Promotion[]
 }
 
 model Product {
   id          String      @id @default(uuid())
-  storeId     String
-  categoryId  String
-  name        String
+  storeId     String?
+  categoryId  String?
+  name        String      @unique
   price       Decimal     @db.Decimal(10, 2)
   stock       Int
   description String?
@@ -104,13 +105,14 @@ model Product {
 
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  
-  store       Store       @relation(fields: [storeId], references: [id])
-  category    Category    @relation(fields: [categoryId], references: [id])
+
+  store       Store?      @relation(fields: [storeId], references: [id], onDelete: SetNull)
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   images      Image[]
-  size        Size?       @relation(fields: [sizeId], references: [id])
-  color       Color?      @relation(fields: [colorId], references: [id])
+  size        Size?       @relation(fields: [sizeId], references: [id], onDelete: SetNull)
+  color       Color?      @relation(fields: [colorId], references: [id], onDelete: SetNull)
   orderItems  OrderItem[]
+  promotions  Promotion[] @relation("ProductToPromotion")
 }
 
 model Size {
@@ -163,6 +165,8 @@ model Order {
   status  OrderStatus @default(PENDING)
   totalAmount Float
   shippingAddress String?
+  paymentMethod String
+  mobileMoneyNumber Int?
 
   addressId  String?
   address    Address? @relation(fields: [addressId], references: [id]) 
@@ -193,4 +197,38 @@ model OrderItem {
   productId    String
 
   @@unique([orderId, productId])
+
+}
+
+model Promotion {
+  id                String   @id @default(cuid())
+  productName       String
+
+  discountPercentage Int
+  finalPrice        Float
+  deadline          DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relation 1:1 avec Message
+  message          Message? @relation("PromotionToMessage")
+
+  storeId          String?
+  store            Store?    @relation(fields: [storeId], references: [id], onDelete: SetNull)
+
+  productId       String
+  product         Product   @relation("ProductToPromotion", fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id                String    @id @default(uuid())
+  messageTitle      String
+  messageContent    String
+
+  // Clé étrangère unique vers Promotion (assure la relation 1:1)
+  promotionId       String    @unique
+  promotion         Promotion @relation("PromotionToMessage", fields: [promotionId], references: [id])
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }

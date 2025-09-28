@@ -140,6 +140,8 @@ export class UsersService {
         data: {
           userId: user.id,
           ...updateProfileDto,
+          firstName: updateProfileDto.firstName,
+          lastName:updateProfileDto.lastName,
         },
       });
     } else {

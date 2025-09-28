@@ -30,7 +30,7 @@ export class AuthCredentialsDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(PASSWORD_REGEX, { message: PASSWORD_VALIDATION_MESSAGE })
+  // @Matches(PASSWORD_REGEX, { message: PASSWORD_VALIDATION_MESSAGE })
   @MinLength(8, {
     message: 'Le mot de passe doit contenir au moins 6 caractères.',
   })

@@ -14,10 +14,8 @@ export class CategoryService {
     // 1. Tente de trouver une catégorie existante avec le même nom et le même storeId.
     const existingCategory = await this.prisma.category.findUnique({
       where: {
-        
-          name: name,
-          storeId: storeId,
-      
+        name: name,
+        storeId: storeId,
       },
     });
 
@@ -42,16 +40,16 @@ export class CategoryService {
   async findAll(): Promise<Category[]> {
     return this.prisma.category.findMany();
   }
-  
+
   async getStoreCategory(storeId: string) {
     const strore = await this.prisma.store.findUnique({
-      where:{ id: storeId},
-      select:{categories:true,}
-    })
+      where: { id: storeId },
+      select: { categories: true },
+    });
     if (!strore) {
-      throw new NotFoundException("Boutique non trouvée .");
+      throw new NotFoundException('Boutique non trouvée .');
     }
-    return strore
+    return strore;
   }
 
   async findOne(id: string): Promise<Category> {

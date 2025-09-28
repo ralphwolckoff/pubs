@@ -159,17 +159,17 @@ export class AuthController {
     return { newUser, accessToken };
   }
 
-  @UseGuards(JwtRefreshStrategy) // Utilise le guard de rafraîchissement
+  @UseGuards(JwtAuthGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
-    @Req() req: RequestWithUser, // Le guard a déjà attaché les données utilisateur
+    @Req() req: RequestWithUser,
     @Res({ passthrough: true }) res: Response,
+    @Body() refreshToken: string,
   ) {
     const { accessToken, refreshToken: newRefreshToken } =
-      await this.authService.refreshToken(req.user.id, req.user.refreshToken);
+      await this.authService.refreshToken(req.user.id, refreshToken);
 
-    // 1. Définir un nouveau cookie pour le refreshToken, en remplacement de l'ancien
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -180,9 +180,9 @@ export class AuthController {
       ),
     });
 
-    // 2. Retourner le nouvel accessToken dans le corps de la réponse
     return {
       accessToken,
+      refreshToken: newRefreshToken,
       user: { id: req.user.id },
     };
   }

@@ -60,6 +60,15 @@ export class OrdersService {
       const priceAtOrder = Number(product.price);
       const storeId = product.storeId;
 
+       if (!storeId) {
+         continue;
+       }
+
+       if (!storeMap.has(storeId)) {
+         storeMap.set(storeId, { totalAmount: 0, items: [] });
+       }
+
+
       if (!storeMap.has(storeId)) {
         storeMap.set(storeId, { totalAmount: 0, items: [] });
       }
@@ -99,6 +108,8 @@ export class OrdersService {
             storeId: storeId,
             shippingAddress: orderData.shippingAddress || null,
             addressId: orderData.addressId || null,
+            paymentMethod: orderData.paymentMethod,
+            mobileMoneyNumber: orderData.mobileMoneyNumber,
             totalAmount: storeOrder.totalAmount,
             items: {
               create: storeOrder.items,

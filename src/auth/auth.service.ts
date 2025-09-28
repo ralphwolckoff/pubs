@@ -113,6 +113,7 @@ export class AuthService {
       newUser: {
         id: newUser.id,
         email: newUser.email,
+        refreshToken:newUser.refreshToken,
         onboardingIsCompleted: newUser.onboardingIsCompleted,
         role: newUser.role,
         
@@ -145,6 +146,7 @@ export class AuthService {
 
     // 3. Génère de nouveaux jetons.
     const tokens = await this.generateTokens(user.id, user.email);
+    console.log({tokens});
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
