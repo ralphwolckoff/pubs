@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Request,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -136,8 +137,11 @@ export class AuthService {
       throw new UnauthorizedException('token de rafrechissement introuvable');
     }
 
+    if (typeof refreshToken !== 'string') {
+      throw new BadRequestException('Le token fourni est invalide.');
+    }
     // 2. Vérifie si le jeton de rafraîchissement stocké est valide.
-    const isTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
+    const isTokenValid = await bcrypt.compare(String(refreshToken), user.refreshToken);
     if (!isTokenValid) {
       throw new ForbiddenException(
         'Jeton de rafraîchissement invalide ou expiré.',

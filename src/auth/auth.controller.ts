@@ -168,7 +168,7 @@ export class AuthController {
     @Body() refreshToken: string,
   ) {
     const { accessToken, refreshToken: newRefreshToken } =
-      await this.authService.refreshToken(req.user.id, refreshToken);
+      await this.authService.refreshToken(req.user.id, String(refreshToken));
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
