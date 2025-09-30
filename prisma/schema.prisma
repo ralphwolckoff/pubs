@@ -44,6 +44,7 @@ model User {
   store     Store?
   address   Address?
   profile   Profile?
+  @@map("user")
 }
 
 model Profile {
@@ -58,6 +59,7 @@ model Profile {
   
   userId      String    @unique
   user        User      @relation(fields: [userId], references: [id])
+  @@map("profile")
 }
 
 model Address {
@@ -73,6 +75,7 @@ model Address {
   user        User      @relation(fields: [userId], references: [id])
 
   order  Order[]
+  @@map("address")
 }
 
 model Store {
@@ -88,6 +91,7 @@ model Store {
   categories  Category[]
   orders      Order[]
   promotions  Promotion[]
+  @@map("store")
 }
 
 model Product {
@@ -113,6 +117,7 @@ model Product {
   color       Color?      @relation(fields: [colorId], references: [id], onDelete: SetNull)
   orderItems  OrderItem[]
   promotions  Promotion[] @relation("ProductToPromotion")
+  @@map("product")
 }
 
 model Size {
@@ -123,6 +128,7 @@ model Size {
   updatedAt DateTime  @updatedAt
   
   products  Product[]
+  @@map("size")
 }
 
 model Color {
@@ -133,6 +139,7 @@ model Color {
   updatedAt DateTime  @updatedAt
   
   products  Product[]
+  @@map("color")
 }
 
 model Category {
@@ -144,6 +151,7 @@ model Category {
 
   store       Store     @relation(fields: [storeId], references: [id])
   products    Product[]
+  @@map("category")
 }
 
 model Image {
@@ -155,6 +163,7 @@ model Image {
   
   product     Product   @relation(fields: [productId], references: [id])
   productId   String
+  @@map("images")
 }
 
 
@@ -181,6 +190,7 @@ model Order {
   storeId String
 
   items   OrderItem[]
+  @@map("order")
 }
 
 model OrderItem {
@@ -197,6 +207,7 @@ model OrderItem {
   productId    String
 
   @@unique([orderId, productId])
+  @@map("orderItem")
 
 }
 
@@ -218,6 +229,7 @@ model Promotion {
 
   productId       String
   product         Product   @relation("ProductToPromotion", fields: [productId], references: [id], onDelete: Cascade)
+  @@map("promotion")
 }
 
 model Message {
@@ -231,4 +243,5 @@ model Message {
 
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  @@map("message")
 }
