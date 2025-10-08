@@ -15,7 +15,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: "https://e-commerce-95zu1yfif-ralphs-projects-741b8b37.vercel.app",
+    origin: "https://e-commerce-eta-jade.vercel.app",
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     allowedHeaders: 'Content-Type, Accept, Authorization', 
